@@ -1,0 +1,7 @@
+requests
+scikit-learn
+pandas
+flytekit
+flytekitplugins-deck-standard
+google-cloud-speech
+marvin
