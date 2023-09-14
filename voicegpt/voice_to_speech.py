@@ -7,7 +7,7 @@ from flytekit import task, workflow
 from google.cloud import speech
 
 @task
-def run_quickstart() -> speech.RecognizeResponse:
+def voice_to_speech() -> str:
     # Instantiates a client
     client = speech.SpeechClient()
 
@@ -28,6 +28,7 @@ def run_quickstart() -> speech.RecognizeResponse:
      # recognition_alternatives : [{x.transcript, x.confidence}]
     recognition_alternatives = sorted(recognition_alternatives, key = lambda x : -x.confidence)
     transcript = recognition_alternatives[0].transcript
+    return transcript
 
-if __name__ == "__main__":
-    run_quickstart()
+# if __name__ == "__main__":
+#     print(voice_to_speech())

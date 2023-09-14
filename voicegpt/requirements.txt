@@ -4,4 +4,5 @@ pandas
 flytekit
 flytekitplugins-deck-standard
 google-cloud-speech
+google-cloud-texttospeech
 marvin
