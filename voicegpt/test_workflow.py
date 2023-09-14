@@ -12,7 +12,7 @@ from speech_to_voice import *
 
 @workflow
 def test_workflow():
-    transcript = voice_to_speech()
+    transcript = voice_to_speech(gcs_uri="gs://wsu78_test_bucket/speech/a0.wav")
     robot_resp = get_response_text(prompt=transcript)
     speech_to_voice(input_string=robot_resp)
 

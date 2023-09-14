@@ -7,13 +7,11 @@ from flytekit import task, workflow
 from google.cloud import speech
 
 @task
-def voice_to_speech() -> str:
+def voice_to_speech(gcs_uri) -> str:
     # Instantiates a client
     client = speech.SpeechClient()
 
     # The name of the audio file to transcribe
-    gcs_uri = "gs://wsu78_test_bucket/speech/a0.wav"
-
     audio = speech.RecognitionAudio(uri=gcs_uri)
 
     config = speech.RecognitionConfig(
@@ -31,4 +29,4 @@ def voice_to_speech() -> str:
     return transcript
 
 # if __name__ == "__main__":
-#     print(voice_to_speech())
+#     print(voice_to_speech("gs://wsu78_test_bucket/speech/a0.wav"))
