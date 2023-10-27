@@ -25,7 +25,7 @@ def voice_to_speech(data_generator) -> List[str]:
 
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=44100,
+        sample_rate_hertz=16000,
         language_code="en-US",
     )
 

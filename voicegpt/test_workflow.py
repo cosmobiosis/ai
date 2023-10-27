@@ -1,20 +1,30 @@
 import pandas as pd
-from sklearn.datasets import load_wine
-from sklearn.linear_model import LogisticRegression
-
-import flytekit.extras.sklearn
-from flytekit import task, workflow
 from google.cloud import speech
 
 from marvin_classifier import *
 from voice_to_speech import *
-from speech_to_voice import *
+from buffer_generator import *
+# from speech_to_voice import *
 
-@workflow
-def test_workflow():
-    transcript = voice_to_speech(gcs_uri="gs://wsu78_test_bucket/speech/a0.wav")
-    robot_resp = get_response_text(prompt=transcript)
-    speech_to_voice(input_string=robot_resp)
+from marvin_classifier import *
+
+from audio_manager import *
+
+import scipy.io.wavfile as scipy_wav
+import wave
+import pyaudio
+import sounddevice
 
 if __name__ == "__main__":
-    test_workflow()
+    recorder = AudioManager()
+    print("Start Recording...")
+    audio_buffer = recorder.record(3)
+    result = io.BytesIO()
+    scipy_wav.write(result, audio_buffer.rate, audio_buffer.data)
+    binary_buffer = result.getvalue()
+
+    generator = BufferGenerator().generator_for_one_trunk(binary_buffer)
+    print(voice_to_speech(generator))
+
+    # robot_resp = get_response_text(prompt=transcript)
+    # speech_to_voice(input_string=robot_resp)

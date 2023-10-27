@@ -16,12 +16,15 @@ class CustomerIntent(Enum):
     NOT_RELEVANT = 8
 
 @task
-def get_response_text(prompt: str) -> str:
+def get_customer_intent_hardcoded_response(prompt: str) -> str:
     # print(prompt)
     intentEnum = CustomerIntent(prompt)
+    
     # print(intentEnum)
-    if intentEnum == CustomerIntent.BILLING:
-        return "Would you like a refund?"
+    match intentEnum:
+        case CustomerIntent.BILLING:
+            return "Would you like a refund?"
+    
     return "Sorry. I don't know what you are talking about you sick fuck."
 
 # if __name__ == "__main__":
