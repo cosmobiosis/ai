@@ -4,7 +4,7 @@ from google.cloud import speech
 from marvin_classifier import *
 from voice_to_speech import *
 from buffer_generator import *
-# from speech_to_voice import *
+from speech_to_voice import *
 
 from marvin_classifier import *
 
@@ -15,13 +15,24 @@ import wave
 import pyaudio
 import sounddevice
 
+from pydub import AudioSegment
+from pydub.playback import play
+import io
+
 if __name__ == "__main__":
-    recorder = MicrophoneStream()
+    microphone_stream = MicrophoneStream()
     print("Start Recording...")
-    audio_buffer_channel = recorder.record(record_duration_seconds=10, seconds_per_buffer=1)
+    audio_buffer_channel = microphone_stream.record(record_duration_seconds=3, seconds_per_buffer=1)
     raw_bytes_channel = AudioBufferMiddleware().convert_audio_buffer(audio_buffer_channel)
     transcribed_text_channel = voice_to_speech(raw_bytes_channel)
+
+    prompt = ""
     for transcribed_text in transcribed_text_channel:
-        print(transcribed_text)
-    # robot_resp = get_response_text(prompt=transcript)
-    # speech_to_voice(input_string=robot_resp)
+        if transcribed_text != "":
+            prompt = transcribed_text
+    
+    print(prompt)
+    robot_resp = get_customer_intent_hardcoded_response(prompt=prompt)
+    response = speech_to_voice(input_string=robot_resp)
+    song = AudioSegment.from_file(io.BytesIO(response), format="mp3")
+    play(song)

@@ -22,10 +22,10 @@ def get_customer_intent_hardcoded_response(prompt: str) -> str:
     
     # print(intentEnum)
     match intentEnum:
-        case CustomerIntent.BILLING:
+        case CustomerIntent.REFU:
             return "Would you like a refund?"
     
-    return "Sorry. I don't know what you are talking about you sick fuck."
+    return "Sorry. I don't know what you are talking about."
 
 # if __name__ == "__main__":
-#     print(get_response_text("I cannot wait to jerk off and fuck"))
+#     print(get_customer_intent_hardcoded_response("I cannot wait to jerk off and fuck"))

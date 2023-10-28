@@ -7,7 +7,6 @@ Note: ssml must be well-formed according to:
 from google.cloud import texttospeech
 from flytekit import task, workflow
 
-@task
 def speech_to_voice(input_string: str):
     # Instantiates a client
     client = texttospeech.TextToSpeechClient()
@@ -32,11 +31,7 @@ def speech_to_voice(input_string: str):
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
 
-    # The response's audio_content is binary.
-    with open("output.mp3", "wb") as out:
-        # Write the response to the output file.
-        out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+    return response.audio_content
 
 # if __name__ == "__main__":
 #     speech_to_voice()
