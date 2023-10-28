@@ -5,33 +5,14 @@ import numpy as np
 import uuid
 from typing import Type
 
-# class Talker:
-#     def __init__(self, name):
-#         self.id = str(uuid.uuid4())
-#         self.name = name
-    
-#     def id(self):
-#         return self.id
-        
-# class Session:
-#     def __init__(self):
-#         self.id = str(uuid.uuid4())
-#         self.dialogues = []
-    
-#     def push_dialogue(talker: Type[Talker]):
-#         pass 
-
-# class Dialogue:
-#     def __init__(self):
-#         self.talker_id = None
-#         self.id = str(uuid.uuid4())
+import math
 
 class AudioBuffer:
     def __init__(self, rate, frames):
         self.rate = rate
         self.data = np.frombuffer(b''.join(frames), dtype=np.int16)
 
-class AudioManager:
+class MicrophoneStream:
     def __init__(self):
         self.sessions = {} # session id -> session
         self.FORMAT = pyaudio.paInt16  # Sample format (e.g., 16-bit integer samples)
@@ -40,7 +21,11 @@ class AudioManager:
         self.CHUNK_SIZE = 1024
         self.pyaudio = pyaudio.PyAudio()
 
-    def record(self, record_duration_seconds):
+    def record(self, record_duration_seconds, seconds_per_buffer):
+        """Generator that records data for x seconds
+            Returns:
+                yielded AudioBuffer
+        """
         # last_active_ts = time.time()
         stream = self.pyaudio.open(
             format=self.FORMAT,
@@ -50,15 +35,20 @@ class AudioManager:
             frames_per_buffer=self.CHUNK_SIZE
         )
 
-        frames = []
+        if seconds_per_buffer is None:
+            seconds_per_buffer = record_duration_seconds
+
+        num_buffer = int(math.ceil(record_duration_seconds / seconds_per_buffer))
         # Record audio from the microphone for the specified duration
-        for _ in range(0, int(self.RATE / self.CHUNK_SIZE * record_duration_seconds)):
-            data = stream.read(self.CHUNK_SIZE)
-            frames.append(data)
+        for i in range(0, num_buffer):
+            frames = []
+            for _ in range(0, int(self.RATE / self.CHUNK_SIZE * seconds_per_buffer)):
+                data = stream.read(self.CHUNK_SIZE)
+                frames.append(data)
+            yield AudioBuffer(self.RATE, frames)
+        
         stream.stop_stream()
         stream.close()
-
-        return AudioBuffer(self.RATE, frames)
 
     def play(self, bytes_stream):
         sounddevice.play(bytes_stream, self.RATE)
@@ -67,5 +57,5 @@ class AudioManager:
 # Initialize PyAudio
 
 if __name__ == "__main__":
-    streamReader = AudioManager()
+    streamReader = MicrophoneStream()
     streamReader.record(3)

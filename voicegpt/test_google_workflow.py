@@ -11,7 +11,6 @@ import pyaudio
 RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
 
-
 class MicrophoneStream:
     """Opens a recording stream as a generator yielding the audio chunks."""
 

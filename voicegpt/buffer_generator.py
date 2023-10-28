@@ -2,15 +2,25 @@ import numpy as np
 import uuid
 from typing import Type
 
-class BufferGenerator:
+import scipy.io.wavfile as scipy_wav
+import wave
+import pyaudio
+import sounddevice
+import io
+
+class AudioBufferMiddleware:
     def __init__(self):
         pass
 
-    def generator_for_one_trunk(self, binary_buffer):
+    def convert_audio_buffer(self, channel):
         """Generator that wraps binary buffer in a generator
             Args:
-                binary_buffer: bytestring
+                channel: generator that yields data
             Returns:
                 yielded binary_buffer: yielded bytestring
         """
-        yield binary_buffer
+        for audio_buffer in channel:
+            result = io.BytesIO()
+            scipy_wav.write(result, audio_buffer.rate, audio_buffer.data)
+            binary_buffer = result.getvalue()
+            yield binary_buffer

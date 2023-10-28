@@ -16,15 +16,12 @@ import pyaudio
 import sounddevice
 
 if __name__ == "__main__":
-    recorder = AudioManager()
+    recorder = MicrophoneStream()
     print("Start Recording...")
-    audio_buffer = recorder.record(3)
-    result = io.BytesIO()
-    scipy_wav.write(result, audio_buffer.rate, audio_buffer.data)
-    binary_buffer = result.getvalue()
-
-    generator = BufferGenerator().generator_for_one_trunk(binary_buffer)
-    print(voice_to_speech(generator))
-
+    audio_buffer_channel = recorder.record(record_duration_seconds=10, seconds_per_buffer=1)
+    raw_bytes_channel = AudioBufferMiddleware().convert_audio_buffer(audio_buffer_channel)
+    transcribed_text_channel = voice_to_speech(raw_bytes_channel)
+    for transcribed_text in transcribed_text_channel:
+        print(transcribed_text)
     # robot_resp = get_response_text(prompt=transcript)
     # speech_to_voice(input_string=robot_resp)

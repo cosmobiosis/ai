@@ -9,13 +9,13 @@ from audio_manager import *
 import pandas as pd
 from google.cloud import speech
 
-def voice_to_speech(data_generator) -> List[str]:
+def voice_to_speech(data_generator):
     """Continuously collect data from the audio stream, into the buffer.
        Reference: https://cloud.google.com/speech-to-text/docs/transcribe-streaming-audio#perform_streaming_speech_recognition_on_an_audio_stream
         Args:
             data_generator: yields audio bytestring data (Maximum size is 20KB for each data yield)
         Returns:
-            transcribed string data
+            generator channel that sends transcribed string data
     """
     client = speech.SpeechClient()
     
@@ -37,13 +37,10 @@ def voice_to_speech(data_generator) -> List[str]:
         requests=requests,
     )
 
-    retvals = []
     for response in responses:
         # Detects speech in the audio file
         recognition_alternatives = response.results[0].alternatives if len(response.results) == 1 else []
         # recognition_alternatives : [{x.transcript, x.confidence}]
         recognition_alternatives = sorted(recognition_alternatives, key = lambda x : -x.confidence)
         transcript = recognition_alternatives[0].transcript
-        retvals.append(transcript)
-
-    return retvals
+        yield transcript
