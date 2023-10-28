@@ -22,16 +22,17 @@ import io
 if __name__ == "__main__":
     microphone_stream = MicrophoneStream()
     print("Start Recording...")
-    audio_buffer_channel = microphone_stream.record(record_duration_seconds=3, seconds_per_buffer=1)
+    audio_buffer_channel = microphone_stream.record(record_duration_seconds=10, seconds_per_buffer=1)
     raw_bytes_channel = AudioBufferMiddleware().convert_audio_buffer(audio_buffer_channel)
     transcribed_text_channel = voice_to_speech(raw_bytes_channel)
 
     prompt = ""
     for transcribed_text in transcribed_text_channel:
+        print("transcribed (streaming): ", transcribed_text)
         if transcribed_text != "":
             prompt = transcribed_text
     
-    print(prompt)
+    print("transcribed (final prompt): ", prompt)
     robot_resp = get_customer_intent_hardcoded_response(prompt=prompt)
     response = speech_to_voice(input_string=robot_resp)
     song = AudioSegment.from_file(io.BytesIO(response), format="mp3")
