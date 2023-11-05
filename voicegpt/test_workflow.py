@@ -35,5 +35,5 @@ if __name__ == "__main__":
     print("transcribed (final prompt): ", prompt)
     robot_resp = get_customer_intent_hardcoded_response(prompt=prompt)
     response = speech_to_voice(input_string=robot_resp)
-    song = AudioSegment.from_file(io.BytesIO(response), format="mp3")
-    play(song)
+    synthesized_voice = AudioSegment.from_file(io.BytesIO(response), format="mp3")
+    play(synthesized_voice)
