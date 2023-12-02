@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+   <Connect>
+       <Stream url="wss://3911-2601-8c-487e-b430-7506-72d5-9601-5495.ngrok-free.app/audiostream" />
+   </Connect>
+</Response>
