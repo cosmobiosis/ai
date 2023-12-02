@@ -12,3 +12,7 @@ numpy
 scipy
 asyncio
 pydub
+transitions
+openai
+Flask>=0.12
+twilio~=6.0.0
